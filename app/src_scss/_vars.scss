@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Roboto:400,700&display=swap');
+
+//Fonts
+$roboto: 'Roboto', sans-serif;
+$slab: 'Roboto Slab', serif;
+
+$text: #333;
+
+$white: #FFFFFF;
+$black: #000000;
+
+//Size
+$px: 8px;
+
+// Customization Bootstrap vars from "app/libs/bootstrap/scss/_variables.scss"
+$grid-gutter-width: 16px;
+$grid-columns: 12;
+$grid-breakpoints: (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px);
+$container-max-widths: (sm: 540px, md: 720px, lg: 960px, xl: 1140px);
+
+$gutter: $grid-gutter-width;
+
+

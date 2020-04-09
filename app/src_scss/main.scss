@@ -1,0 +1,79 @@
+@import "vars";
+@import "libs";
+@import "header";
+@import "footer";
+
+::placeholder {
+	color: #666;
+}
+::selection {
+	background-color: #AC9670;
+	color: $white;
+}
+*{
+	box-sizing: border-box;
+}
+body {
+	height: 100vh;
+	width: 100vw;
+	font-size: 16px;
+	min-width: 375px;
+	position: relative;
+	line-height: 1.65;
+	font-family: $roboto;
+	overflow-x: hidden;
+	color: #57585B;
+	input, textarea, select {
+		width: 100%;
+		padding: $px*2;
+		&:focus:required:invalid {
+			border-color: red;
+		}
+		&:required:valid {
+			border-color: green;
+		}
+	}
+}
+.img-responsive {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	&.img-width {
+		width: 100%;
+	}
+}
+.flex-nowrap{
+	display: flex;
+	flex-flow: row nowrap;
+}
+.text-center {
+	text-align: center;
+}
+.content-center{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.content-start{
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+.content-end{
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+.content-between{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.display-none{
+	@include media-breakpoint-down(sm) {
+		display: none;
+	}
+}
+
+
+@import "media"; // Always at the end
