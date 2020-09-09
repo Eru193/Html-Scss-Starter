@@ -1,0 +1,68 @@
+@import "vars";
+@import "libs";
+@import "header";
+@import "footer";
+
+::placeholder {
+  color: #333;
+}
+::selection {
+  background-color: #000;
+  color: $white;
+}
+body {
+  height: 100vh;
+  font-size: 16px;
+  min-width: 375px;
+  position: relative;
+  line-height: 1.65;
+  font-family: $roboto;
+  overflow-x: hidden;
+  color: #000;
+}
+.img-responsive {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  &.img-width {
+    width: 100%;
+  }
+}
+.text-center {
+  text-align: center;
+}
+.align-items-center {
+  display: flex;
+  align-items: center;
+}
+.content-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.content-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.content-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.content-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.row-nowrap {
+  display: flex;
+  flex-flow: row nowrap;
+}
+.display-sm-none {
+  @include media-breakpoint-down(sm) {
+    display: none;
+  }
+}
+
+@import "media"; // Always at the end
