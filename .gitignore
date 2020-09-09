@@ -1,7 +1,8 @@
 node_modules
 /dist/
 /.git/
-/app/dest/
+/app/css/
+/app/js/
 /**/_backstage
 /**/package-lock.json
 /**/Thumbs.db
