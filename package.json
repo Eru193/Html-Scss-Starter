@@ -8,16 +8,21 @@
     "start": "npx gulp"
   },
   "author": "Eru193",
-  "license": "",
+  "license": "MIT",
   "devDependencies": {
-    "bootstrap": "^4.4.1",
-    "browser-sync": "^2.26.7",
+    "bootstrap": "^5.1.3",
+    "browser-sync": "^2.27.9",
     "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^7.0.1",
+    "gulp-autoprefixer": "^8.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
-    "gulp-rsync": "0.0.8",
-    "gulp-sass": "^4.0.2",
-    "gulp-uglify-es": "^2.0.0"
-  }
+    "gulp-file-include": "^2.3.0",
+    "gulp-rsync": "0.0.9",
+    "gulp-sass": "^5.1.0",
+    "gulp-uglify-es": "^3.0.0"
+  },
+  "dependencies": {
+    "node-sass": "^7.0.1"
+  },
+  "repository": "https://github.com/Eru193/Html-Scss-Starter.git"
 }

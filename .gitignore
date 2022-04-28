@@ -1,9 +1,5 @@
 node_modules
-/dist/
+/build/
 /.git/
-/app/css/
-/app/js/
-/**/_backstage
 /**/package-lock.json
-/**/Thumbs.db
-/**/*.DS_Store
+

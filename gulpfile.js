@@ -1,32 +1,44 @@
-var gulp = require("gulp"),
-  sass = require("gulp-sass"),
-  browserSync = require("browser-sync").create(),
-  concat = require("gulp-concat"),
-  uglify = require("gulp-uglify-es").default,
-  cleancss = require("gulp-clean-css"),
-  autoprefixer = require("gulp-autoprefixer"),
-  rsync = require("gulp-rsync");
+const gulp = require("gulp");
+const fileinclude = require("gulp-file-include");
+const server = require("browser-sync").create();
+const sass = require("gulp-sass")(require("node-sass"));
+const concat = require("gulp-concat");
+const cleancss = require("gulp-clean-css");
+const autoprefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify-es").default;
 
-// Local Server
-gulp.task("browser-sync", function () {
-  browserSync.init({
-    server: {
-      baseDir: "app",
-    },
-    notify: false,
-    // online: false, // Work offline without internet connection
-    // tunnel: true, tunnel: 'projectname', // Demonstration page: http://projectname.localtunnel.me
-  });
-});
-function bsReload(done) {
-  browserSync.reload();
-  done();
+const { watch, series } = require("gulp");
+
+const patchs = {
+  scripts: {
+    src: "./src",
+    dest: "./build/",
+  },
+};
+
+// Reload Server
+async function reload() {
+  server.reload();
 }
 
-// Custom Styles
-gulp.task("styles", function () {
+// Copy assets after build
+async function copyAssets() {
+  gulp.src(["assets/**/*"]).pipe(gulp.dest(patchs.scripts.dest));
+}
+
+// Scripts & JS Libraries
+async function script() {
   return gulp
-    .src("app/src/scss/**/*.scss")
+    .src([`${patchs.scripts.src}/js/_custom.js`])
+    .pipe(concat("scripts.min.js"))
+    .pipe(uglify()) // Minify js (opt.)
+    .pipe(gulp.dest(`${patchs.scripts.dest}/js`));
+}
+
+// Sass compiler
+async function compileSass() {
+  gulp
+    .src([`${patchs.scripts.src}/scss/**/*.scss`])
     .pipe(
       sass({
         outputStyle: "expanded",
@@ -41,56 +53,55 @@ gulp.task("styles", function () {
       })
     )
     .pipe(cleancss({ level: { 1: { specialComments: 0 } } })) // Optional. Comment out when debugging
-    .pipe(gulp.dest("app/css"))
-    .pipe(browserSync.stream());
-});
+    .pipe(sass().on("error", sass.logError))
+    .pipe(gulp.dest(`${patchs.scripts.dest}/css`));
+}
 
-// Scripts & JS Libraries
-gulp.task("scripts", function () {
+// Build files html and reload server
+async function buildAndReload() {
+  await includeHTML();
+  await copyAssets();
+  await compileSass();
+  await script();
+  reload();
+}
+
+async function includeHTML() {
   return gulp
     .src([
-      // 'node_modules/jquery/dist/jquery.min.js', // Optional jQuery plug-in (npm i --save-dev jquery)
-      "app/src/js/_libs.js", // JS libraries (all in one)
-      "app/src/js/_custom.js", // Custom scripts. Always at the end
+      `${patchs.scripts.src}/index.html`,
+      // "!header.html", // ignore
+      // "!footer.html", // ignore
     ])
-    .pipe(concat("scripts.min.js"))
-    .pipe(uglify()) // Minify js (opt.)
-    .pipe(gulp.dest("app/js"))
-    .pipe(browserSync.reload({ stream: true }));
-});
+    .pipe(
+      fileinclude({
+        prefix: "@@",
+        basepath: "@file",
+      })
+    )
+    .pipe(gulp.dest(patchs.scripts.dest));
+}
+exports.includeHTML = includeHTML;
 
-// Code & Reload
-gulp.task("code", function () {
-  return gulp.src("app/**/*.html").pipe(browserSync.reload({ stream: true }));
-});
-
-// Deploy
-gulp.task("rsync", function () {
-  return gulp.src("app/").pipe(
-    rsync({
-      root: "app/",
-      hostname: "username@yousite.com",
-      destination: "yousite/public_html/",
-      // include: ['*.htaccess'], // Included files
-      exclude: ["**/Thumbs.db", "**/*.DS_Store"], // Excluded files
-      recursive: true,
-      archive: true,
-      silent: false,
-      compress: true,
-    })
+exports.default = async function () {
+  // Init serve files from the build folder
+  server.init({
+    server: {
+      baseDir: patchs.scripts.dest,
+    },
+  });
+  // Build and reload at the first time
+  buildAndReload();
+  // Watch tasks
+  watch("./app/scss/**/*.scss", series(compileSass));
+  watch(
+    [
+      `${patchs.scripts.src}/*.html`,
+      `${patchs.scripts.src}/templates/*.html`,
+      `${patchs.scripts.src}/assets/**/*`,
+      `${patchs.scripts.src}/scss/**/*.scss`,
+      `${patchs.scripts.src}/js/_custom.js`,
+    ],
+    series(buildAndReload)
   );
-});
-
-gulp.task("watch", function () {
-  gulp.watch("app/src/scss/**/*.scss", gulp.parallel("styles"));
-  gulp.watch(
-    ["app/src/js/_custom.js", "app/src_js/_libs.js"],
-    gulp.parallel("scripts")
-  );
-  gulp.watch("app/*.html", gulp.parallel("code"));
-});
-
-gulp.task(
-  "default",
-  gulp.parallel("styles", "scripts", "browser-sync", "watch")
-);
+};
