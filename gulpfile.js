@@ -23,7 +23,9 @@ async function reload() {
 
 // Copy assets after build
 async function copyAssets() {
-  gulp.src(["assets/**/*"]).pipe(gulp.dest(patchs.scripts.dest));
+  gulp
+    .src([`${patchs.scripts.src}/assets/**/*`])
+    .pipe(gulp.dest(`${patchs.scripts.dest}/assets/`));
 }
 
 // Scripts & JS Libraries
